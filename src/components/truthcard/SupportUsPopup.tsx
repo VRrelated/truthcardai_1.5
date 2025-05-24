@@ -48,12 +48,14 @@ export default function SupportUsPopup({ open, onOpenChange, gumroadLink }: Supp
           <AlertDialogCancel asChild>
             <Button variant="outline" className="w-full sm:w-auto">Maybe Later</Button>
           </AlertDialogCancel>
-          <AlertDialogAction asChild>
+          <AlertDialogAction
+            asChild
+            className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
             <a
               href={gumroadLink}
               target="_blank"
               rel="noopener noreferrer"
-              className={Button({className: "w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground"})}
             >
               Support Us on Gumroad
             </a>
