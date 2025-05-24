@@ -7,7 +7,8 @@ import ProfileUploadForm from '@/components/truthcard/ProfileUploadForm';
 import ResultsDisplay from '@/components/truthcard/ResultsDisplay';
 import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
-import { Loader2, Share2, UserPlus, Download, Terminal } from 'lucide-react';
+import { Share2, UserPlus, Download, Terminal } from 'lucide-react';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { cn } from '@/lib/utils';
 
 const introTerminalLines = [
@@ -185,8 +186,13 @@ export default function TruthCardPage() {
 
           {isLoading && (
             <div className="flex flex-col items-center justify-center space-y-4 p-8 rounded-lg shadow-xl bg-black/90 backdrop-blur-md border-t-2 border-primary mt-16 w-full max-w-md mx-auto animate-fadeIn">
-              <Loader2 className="animate-spin h-16 w-16 text-primary" />
-              <p className="text-accent text-xl text-center">Analyzing profile... Engaging AI judgment matrix...</p>
+              <DotLottieReact
+                src="https://lottie.host/202347a9-0b47-4bc3-b1a2-38a0321e7670/Pja9uHpvCZ.lottie"
+                loop
+                autoplay
+                style={{ width: '150px', height: '150px' }} // Added style for size
+              />
+              <p className="text-accent text-xl text-center pt-4">Analyzing profile... Engaging AI judgment matrix...</p>
               <p className="text-muted-foreground text-sm text-center">Please wait, the truth can be computationally intensive.</p>
             </div>
           )}
