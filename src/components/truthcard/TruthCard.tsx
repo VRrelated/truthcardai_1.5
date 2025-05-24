@@ -26,7 +26,7 @@ export default function TruthCard({ data, profileImagePreview }: TruthCardProps)
           />
         )}
         <div className="flex-1">
-          <h3 className="text-xl font-semibold text-cyan-400 mb-2">Roast Highlights:</h3>
+          <h3 className="text-xl font-semibold text-cyan-400 mb-2 text-center md:text-left">Roast Highlights:</h3>
           {redFlags && redFlags.length > 0 ? (
             <ul className="space-y-1.5">
               {redFlags.slice(0, 3).map((flag, index) => (

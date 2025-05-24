@@ -166,7 +166,7 @@ export default function TruthCardPage() {
     <div className="flex flex-col min-h-screen bg-background text-foreground font-mono">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-12 flex flex-col items-center">
-        <div className="w-full max-w-xl space-y-8">
+        <div className="w-full max-w-3xl space-y-8">
           {!roastData && !isLoading && !error && (
             <>
               <div className="text-center">
@@ -185,12 +185,12 @@ export default function TruthCardPage() {
           )}
 
           {isLoading && (
-            <div className="flex flex-col items-center justify-center space-y-4 p-8 rounded-lg shadow-xl bg-black/90 backdrop-blur-md border-t-2 border-primary mt-16 w-full max-w-md mx-auto animate-fadeIn">
+            <div className="flex flex-col items-center justify-center space-y-4 p-8 rounded-lg shadow-xl bg-card backdrop-blur-md border-t-2 border-primary mt-16 w-full max-w-md mx-auto animate-fadeIn">
               <DotLottieReact
                 src="https://lottie.host/202347a9-0b47-4bc3-b1a2-38a0321e7670/Pja9uHpvCZ.lottie"
                 loop
                 autoplay
-                style={{ width: '150px', height: '150px' }} // Added style for size
+                style={{ width: '150px', height: '150px' }}
               />
               <p className="text-accent text-xl text-center pt-4">Analyzing profile... Engaging AI judgment matrix...</p>
               <p className="text-muted-foreground text-sm text-center">Please wait, the truth can be computationally intensive.</p>
@@ -210,7 +210,7 @@ export default function TruthCardPage() {
           {roastData && !isLoading && (
             <>
               <ResultsDisplay data={roastData} profileImagePreview={currentProfileImagePreview} />
-              <div className="mt-8 w-full max-w-3xl space-y-3 text-center">
+              <div className="mt-8 w-full space-y-3 text-center">
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
                   <Button className="bg-sky-500 hover:bg-sky-600 text-white w-full sm:flex-1 py-3 text-base rounded-md shadow-md hover:shadow-lg transition-shadow">
                     <Share2 size={18} className="mr-2"/> Share 3D Card / TikTok
