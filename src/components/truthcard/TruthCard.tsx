@@ -14,7 +14,7 @@ export default function TruthCard({ data, profileImagePreview }: TruthCardProps)
   const aiGeneratedMemeText = "(Simulated AI Meme)";
 
   return (
-    <div className="bg-card p-4 md:p-6 rounded-lg border-2 border-cyan-400 shadow-[0_0_15px_theme(colors.cyan.400)] text-foreground animate-fadeIn">
+    <div className="bg-card p-4 md:p-6 rounded-lg border-2 border-cyan-400 shadow-2xl text-foreground animate-fadeIn">
       {/* Top section: Image and Roast Highlights */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         {profileImagePreview && (
@@ -46,13 +46,13 @@ export default function TruthCard({ data, profileImagePreview }: TruthCardProps)
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <h4 className="text-lg font-semibold text-accent mb-2 text-center md:text-left">Compatibility Heatmap:</h4>
-          <div className="bg-background/40 border-2 border-accent rounded-lg p-4 flex items-center justify-center h-32 md:h-36">
+          <div className="bg-background/40 border-2 border-accent rounded-lg p-4 flex items-center justify-center h-32 md:h-36 shadow-md">
             <p className="text-muted-foreground text-sm text-center">{compatibilityHeatmapText}</p>
           </div>
         </div>
         <div>
           <h4 className="text-lg font-semibold text-primary mb-2 text-center md:text-left">AI Generated Meme:</h4>
-          <div className="bg-background/40 border-2 border-primary rounded-lg p-4 flex items-center justify-center h-32 md:h-36">
+          <div className="bg-background/40 border-2 border-primary rounded-lg p-4 flex items-center justify-center h-32 md:h-36 shadow-md">
             <p className="text-muted-foreground text-sm text-center">{aiGeneratedMemeText}</p>
           </div>
         </div>

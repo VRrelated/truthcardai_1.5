@@ -7,7 +7,7 @@ export default function Header() {
       <div className="container mx-auto flex items-center justify-between">
         <Link 
           href="/" 
-          className="flex items-center gap-2 text-2xl font-bold text-red-600 hover:text-red-500 transition-colors drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]"
+          className="flex items-center gap-2 text-2xl font-bold text-red-600 hover:text-red-500 transition-colors"
         >
           <ShieldAlert size={28} className="text-accent" />
           TruthCard.AI
