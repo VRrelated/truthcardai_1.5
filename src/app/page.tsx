@@ -1,13 +1,14 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type CSSProperties } from 'react';
 import type { GenerateCringeIndexOutput } from '@/ai/flows/generate-cringe-index';
 import ProfileUploadForm from '@/components/truthcard/ProfileUploadForm';
 import ResultsDisplay from '@/components/truthcard/ResultsDisplay';
 import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
 import { Zap, Loader2, Share2, UserPlus, Download, Star, Terminal } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const introTerminalLines = [
   "Booting TruthCard.AI v1.5...",
@@ -29,30 +30,57 @@ export default function TruthCardPage() {
   // For onboarding terminal
   const [displayedTerminalLines, setDisplayedTerminalLines] = useState<string[]>([]);
   const [allTerminalLinesDisplayed, setAllTerminalLinesDisplayed] = useState(false);
+  const [isTerminalFadingOut, setIsTerminalFadingOut] = useState(false);
 
 
   useEffect(() => {
-    if (showIntro) {
-      setDisplayedTerminalLines([]); 
+    if (showIntro && !isTerminalFadingOut) {
+      setDisplayedTerminalLines([]);
       setAllTerminalLinesDisplayed(false);
-      let currentDelay = 200; 
-      const lineDelay = 600; 
+      let currentDelay = 200;
+      const lineDisplayDuration = 600; // Time each line is displayed before next one starts
+      const postCompletionDelay = 1000; // Delay after all lines are shown before starting fade
 
       introTerminalLines.forEach((line, index) => {
         setTimeout(() => {
-          setDisplayedTerminalLines((prev) => [...prev, line]);
-          if (index === introTerminalLines.length - 1) {
-            setTimeout(() => setAllTerminalLinesDisplayed(true), lineDelay / 2); 
+          // Check if still in intro and not fading out, to prevent updates after transition starts
+          if (showIntro && !isTerminalFadingOut) { 
+            setDisplayedTerminalLines((prev) => [...prev, line]);
+            if (index === introTerminalLines.length - 1) {
+              setAllTerminalLinesDisplayed(true);
+              setTimeout(() => {
+                if (showIntro) { // Ensure still in intro phase
+                   setIsTerminalFadingOut(true); // Start fade out
+                }
+              }, postCompletionDelay);
+            }
           }
         }, currentDelay);
-        currentDelay += lineDelay;
+        currentDelay += lineDisplayDuration;
       });
       document.body.classList.add('overflow-hidden');
-    } else {
+    } else if (!showIntro) {
       document.body.classList.remove('overflow-hidden');
     }
-    return () => document.body.classList.remove('overflow-hidden');
-  }, [showIntro]);
+    // Cleanup for document.body.classList is handled when showIntro toggles or component unmounts
+    return () => {
+      if (!showIntro) { // Ensure class is removed if component unmounts while intro is not shown
+        document.body.classList.remove('overflow-hidden');
+      }
+    };
+  }, [showIntro, isTerminalFadingOut]);
+
+
+  useEffect(() => {
+    if (isTerminalFadingOut) {
+      const fadeOutDuration = 500; // Must match Tailwind animation duration
+      const timer = setTimeout(() => {
+        handleStartRoasting();
+      }, fadeOutDuration);
+      return () => clearTimeout(timer);
+    }
+  }, [isTerminalFadingOut]);
+
 
   const handleAnalysisComplete = (data: GenerateCringeIndexOutput, imagePreview: string | null) => {
     setRoastData(data);
@@ -76,6 +104,7 @@ export default function TruthCardPage() {
   
   const handleStartRoasting = () => {
     setShowIntro(false);
+    // setIsTerminalFadingOut(false); // Optionally reset if intro can be re-shown
   };
 
   const handleReset = () => {
@@ -83,16 +112,25 @@ export default function TruthCardPage() {
     setIsLoading(false);
     setError(null);
     setCurrentProfileImagePreview(null);
+    // If you want to go back to the intro terminal on reset:
+    // setShowIntro(true);
+    // setIsTerminalFadingOut(false);
+    // setAllTerminalLinesDisplayed(false);
+    // setDisplayedTerminalLines([]);
   };
 
   if (showIntro) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4 font-mono relative overflow-hidden">
+      <div className={cn(
+        "flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4 font-mono relative overflow-hidden",
+        isTerminalFadingOut && "animate-fadeOut"
+        )}
+      >
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
           backgroundImage: "linear-gradient(rgba(0,255,0,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,0,0.3) 1px, transparent 1px)",
           backgroundSize: "20px 20px",
           animation: "matrixScroll 10s linear infinite",
-        }}></div>
+        } as CSSProperties}></div>
         <style jsx global>{`
           @keyframes matrixScroll {
             0% { background-position: 0 0; }
@@ -109,34 +147,15 @@ export default function TruthCardPage() {
               <p key={index} className="text-sm">
                 <span className="text-primary">&gt;&nbsp;</span>
                 <span className="text-accent">{line}</span>
-                {index === displayedTerminalLines.length - 1 && !allTerminalLinesDisplayed && (
+                {index === displayedTerminalLines.length - 1 && !allTerminalLinesDisplayed && !isTerminalFadingOut && (
                   <span className="inline-block w-2 h-4 bg-accent animate-ping ml-1"></span>
+                )}
+                 {index === displayedTerminalLines.length - 1 && allTerminalLinesDisplayed && !isTerminalFadingOut && (
+                  <span className="inline-block w-2 h-4 bg-accent ml-1"></span>
                 )}
               </p>
             ))}
           </div>
-
-          {allTerminalLinesDisplayed && (
-            <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center animate-fadeIn">
-              <Button
-                onClick={handleStartRoasting}
-                size="lg"
-                className="text-lg py-4 px-6 bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg hover:scale-105 transition-transform duration-150 flex-1"
-              >
-                <Zap className="mr-2 h-5 w-5" />
-                PROCEED TO ROAST
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg py-4 px-6 border-primary text-primary hover:bg-primary/10 hover:text-primary shadow-lg hover:scale-105 transition-transform duration-150 flex-1"
-                onClick={() => { alert("Pro Tier coming soon!"); }}
-              >
-                <Star className="mr-2 h-5 w-5" /> 
-                SELECT PRO TIER
-              </Button>
-            </div>
-          )}
         </div>
 
         <footer className="absolute bottom-4 text-center text-muted-foreground text-xs z-10">
