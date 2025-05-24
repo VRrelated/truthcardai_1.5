@@ -11,7 +11,7 @@ body {
     --background: 0 0% 0%; /* Black */
     --foreground: 0 0% 98%; /* Near White for high contrast on black */
 
-    --card: 220 40% 35%; /* Light Navy Blue */
+    --card: 220 10% 18%; /* Darker, slightly bluish-grey for card interior */
     --card-foreground: 0 0% 95%;
 
     --popover: 220 6% 10%;
@@ -60,7 +60,7 @@ body {
     --background: 0 0% 0%;
     --foreground: 0 0% 98%;
 
-    --card: 220 40% 35%; /* Light Navy Blue */
+    --card: 220 10% 18%; /* Darker, slightly bluish-grey for card interior */
     --card-foreground: 0 0% 95%;
 
     --popover: 220 6% 10%;
@@ -117,3 +117,4 @@ body {
   border-style: dashed;
   border-color: hsl(var(--foreground));
 }
+

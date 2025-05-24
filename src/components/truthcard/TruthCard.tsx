@@ -14,7 +14,7 @@ export default function TruthCard({ data, profileImagePreview }: TruthCardProps)
   const aiGeneratedMemeText = "(Simulated AI Meme)";
 
   return (
-    <div className="bg-card p-4 md:p-6 rounded-lg border-2 border-primary shadow-[0_0_15px_hsl(var(--primary))] text-foreground animate-fadeIn">
+    <div className="bg-card p-4 md:p-6 rounded-lg border-2 border-cyan-400 shadow-[0_0_15px_theme(colors.cyan.400)] text-foreground animate-fadeIn">
       {/* Top section: Image and Roast Highlights */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         {profileImagePreview && (
@@ -26,7 +26,7 @@ export default function TruthCard({ data, profileImagePreview }: TruthCardProps)
           />
         )}
         <div className="flex-1">
-          <h3 className="text-xl font-semibold text-primary mb-2">Roast Highlights:</h3>
+          <h3 className="text-xl font-semibold text-cyan-400 mb-2">Roast Highlights:</h3>
           {redFlags && redFlags.length > 0 ? (
             <ul className="space-y-1.5">
               {redFlags.slice(0, 3).map((flag, index) => (
