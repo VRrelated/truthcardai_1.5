@@ -9,98 +9,96 @@ body {
 @layer base {
   :root {
     --background: 0 0% 0%; /* Black */
-    --foreground: 220 10% 85%; /* Light Gray */
+    --foreground: 0 0% 98%; /* Near White for high contrast on black */
 
-    --card: 220 6% 22%;
-    --card-foreground: 220 10% 85%;
+    --card: 220 6% 12%; /* Darker card, more subtle */
+    --card-foreground: 0 0% 95%;
 
-    --popover: 220 6% 20%;
-    --popover-foreground: 220 10% 85%;
+    --popover: 220 6% 10%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 288 83% 54%; /* Electric Purple #BE29EC */
+    --primary: 330 100% 55%; /* Vibrant Pink (Hotpink-like) */
     --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 220 6% 30%;
-    --secondary-foreground: 220 10% 90%;
+    --secondary: 220 6% 25%; /* Darker secondary */
+    --secondary-foreground: 0 0% 90%;
 
-    --muted: 220 6% 25%;
-    --muted-foreground: 220 10% 65%;
+    --muted: 220 6% 20%;
+    --muted-foreground: 0 0% 65%; /* Lighter muted foreground for readability */
 
-    --accent: 129 100% 52%; /* Neon Green #39FF14 */
-    --accent-foreground: 220 6% 10%; /* Dark for text on neon green */
+    --accent: 129 100% 52%; /* Neon Green */
+    --accent-foreground: 0 0% 5%; /* Dark for text on neon green */
 
-    --destructive: 0 72% 51%; /* Adjusted for better visibility on dark */
+    --destructive: 0 72% 51%; 
     --destructive-foreground: 0 0% 98%;
 
-    --border: 288 50% 35%; /* Darker Purple */
-    --input: 220 6% 25%;
-    --ring: 129 100% 52%; /* Neon Green for focus rings */
+    --border: 220 6% 25%; /* Border for general elements */
+    --input: 220 6% 18%;
+    --ring: 330 100% 60%; /* Ring color related to new primary */
 
     --radius: 0.5rem;
 
-    /* Chart colors - can be adjusted to fit cyberpunk theme later if charts are used */
-    --chart-1: 288 83% 54%; /* Primary */
-    --chart-2: 129 100% 52%; /* Accent */
+    /* Chart colors */
+    --chart-1: var(--primary); 
+    --chart-2: var(--accent); 
     --chart-3: 220 70% 65%; 
     --chart-4: 300 70% 65%;
     --chart-5: 320 70% 65%;
 
-    /* Sidebar specific colors - kept for consistency if sidebar is ever used */
-    --sidebar-background: 220 6% 12%;
-    --sidebar-foreground: 220 10% 80%;
-    --sidebar-primary: 288 83% 54%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 129 100% 52%;
-    --sidebar-accent-foreground: 220 6% 10%;
-    --sidebar-border: 288 50% 25%;
-    --sidebar-ring: 129 100% 52%;
+    /* Sidebar specific colors */
+    --sidebar-background: 220 6% 10%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--accent);
+    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-border: 220 6% 20%;
+    --sidebar-ring: var(--ring);
   }
 
-  /* The app is dark by default, so .dark class is not strictly necessary for these overrides */
-  /* but kept for potential future use or if ShadCN components rely on it internally. */
   .dark {
-    --background: 0 0% 0%; /* Black */
-    --foreground: 220 10% 85%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 98%;
 
-    --card: 220 6% 22%;
-    --card-foreground: 220 10% 85%;
+    --card: 220 6% 12%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 220 6% 20%;
-    --popover-foreground: 220 10% 85%;
+    --popover: 220 6% 10%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 288 83% 54%;
+    --primary: 330 100% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 6% 30%;
-    --secondary-foreground: 220 10% 90%;
+    --secondary: 220 6% 25%;
+    --secondary-foreground: 0 0% 90%;
 
-    --muted: 220 6% 25%;
-    --muted-foreground: 220 10% 65%;
+    --muted: 220 6% 20%;
+    --muted-foreground: 0 0% 65%;
 
     --accent: 129 100% 52%;
-    --accent-foreground: 220 6% 10%;
+    --accent-foreground: 0 0% 5%;
 
-    --destructive: 0 63% 40%; /* Darker destructive for dark mode */
+    --destructive: 0 63% 40%; 
     --destructive-foreground: 0 0% 98%;
 
-    --border: 288 50% 35%;
-    --input: 220 6% 25%;
-    --ring: 129 100% 52%;
+    --border: 220 6% 25%;
+    --input: 220 6% 18%;
+    --ring: 330 100% 60%;
     
-    --chart-1: 288 83% 60%;
-    --chart-2: 129 100% 60%;
+    --chart-1: var(--primary);
+    --chart-2: var(--accent);
     --chart-3: 220 70% 70%;
     --chart-4: 300 70% 70%;
     --chart-5: 320 70% 70%;
 
-    --sidebar-background: 220 6% 12%;
-    --sidebar-foreground: 220 10% 80%;
-    --sidebar-primary: 288 83% 54%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 129 100% 52%;
-    --sidebar-accent-foreground: 220 6% 10%;
-    --sidebar-border: 288 50% 25%;
-    --sidebar-ring: 129 100% 52%;
+    --sidebar-background: 220 6% 10%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--accent);
+    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-border: 220 6% 20%;
+    --sidebar-ring: var(--ring);
   }
 }
 
@@ -110,7 +108,12 @@ body {
   }
   body {
     @apply bg-background text-foreground;
-    /* Apply dark theme by default */
     @apply dark;
   }
+}
+
+/* Helper for dashed border with foreground color */
+.border-dashed-foreground {
+  border-style: dashed;
+  border-color: hsl(var(--foreground));
 }

@@ -7,7 +7,7 @@ import ProfileUploadForm from '@/components/truthcard/ProfileUploadForm';
 import ResultsDisplay from '@/components/truthcard/ResultsDisplay';
 import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
-import { Zap, Loader2, Share2, UserPlus, Download, Star, Terminal } from 'lucide-react';
+import { Loader2, Share2, UserPlus, Download, Terminal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const introTerminalLines = [
@@ -20,6 +20,10 @@ const introTerminalLines = [
   "Please consider clicking the SELECT PRO TIER.",
 ];
 
+const DashedSeparator = () => (
+  <hr className="w-full border-t-2 border-dashed-foreground my-8" />
+);
+
 export default function TruthCardPage() {
   const [roastData, setRoastData] = useState<GenerateCringeIndexOutput | null>(null);
   const [currentProfileImagePreview, setCurrentProfileImagePreview] = useState<string | null>(null);
@@ -27,7 +31,6 @@ export default function TruthCardPage() {
   const [error, setError] = useState<string | null>(null);
   const [showIntro, setShowIntro] = useState(true); 
 
-  // For onboarding terminal
   const [displayedTerminalLines, setDisplayedTerminalLines] = useState<string[]>([]);
   const [allTerminalLinesDisplayed, setAllTerminalLinesDisplayed] = useState(false);
   const [isTerminalFadingOut, setIsTerminalFadingOut] = useState(false);
@@ -38,19 +41,18 @@ export default function TruthCardPage() {
       setDisplayedTerminalLines([]);
       setAllTerminalLinesDisplayed(false);
       let currentDelay = 200;
-      const lineDisplayDuration = 600; // Time each line is displayed before next one starts
-      const postCompletionDelay = 1000; // Delay after all lines are shown before starting fade
+      const lineDisplayDuration = 600; 
+      const postCompletionDelay = 1000; 
 
       introTerminalLines.forEach((line, index) => {
         setTimeout(() => {
-          // Check if still in intro and not fading out, to prevent updates after transition starts
           if (showIntro && !isTerminalFadingOut) { 
             setDisplayedTerminalLines((prev) => [...prev, line]);
             if (index === introTerminalLines.length - 1) {
               setAllTerminalLinesDisplayed(true);
               setTimeout(() => {
-                if (showIntro) { // Ensure still in intro phase
-                   setIsTerminalFadingOut(true); // Start fade out
+                if (showIntro) { 
+                   setIsTerminalFadingOut(true); 
                 }
               }, postCompletionDelay);
             }
@@ -62,9 +64,8 @@ export default function TruthCardPage() {
     } else if (!showIntro) {
       document.body.classList.remove('overflow-hidden');
     }
-    // Cleanup for document.body.classList is handled when showIntro toggles or component unmounts
     return () => {
-      if (!showIntro) { // Ensure class is removed if component unmounts while intro is not shown
+      if (!showIntro) { 
         document.body.classList.remove('overflow-hidden');
       }
     };
@@ -73,7 +74,7 @@ export default function TruthCardPage() {
 
   useEffect(() => {
     if (isTerminalFadingOut) {
-      const fadeOutDuration = 500; // Must match Tailwind animation duration
+      const fadeOutDuration = 500; 
       const timer = setTimeout(() => {
         handleStartRoasting();
       }, fadeOutDuration);
@@ -104,7 +105,6 @@ export default function TruthCardPage() {
   
   const handleStartRoasting = () => {
     setShowIntro(false);
-    // setIsTerminalFadingOut(false); // Optionally reset if intro can be re-shown
   };
 
   const handleReset = () => {
@@ -112,11 +112,6 @@ export default function TruthCardPage() {
     setIsLoading(false);
     setError(null);
     setCurrentProfileImagePreview(null);
-    // If you want to go back to the intro terminal on reset:
-    // setShowIntro(true);
-    // setIsTerminalFadingOut(false);
-    // setAllTerminalLinesDisplayed(false);
-    // setDisplayedTerminalLines([]);
   };
 
   if (showIntro) {
@@ -127,7 +122,7 @@ export default function TruthCardPage() {
         )}
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
-          backgroundImage: "linear-gradient(rgba(0,255,0,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,0,0.3) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(hsla(var(--accent)/0.3) 1px, transparent 1px), linear-gradient(90deg, hsla(var(--accent)/0.3) 1px, transparent 1px)",
           backgroundSize: "20px 20px",
           animation: "matrixScroll 10s linear infinite",
         } as CSSProperties}></div>
@@ -168,26 +163,30 @@ export default function TruthCardPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground font-mono">
       <Header />
-      <main className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center">
-        <div className="w-full max-w-2xl space-y-8">
+      <main className="flex-grow container mx-auto px-4 py-12 flex flex-col items-center">
+        <div className="w-full max-w-xl space-y-8">
           {!roastData && !isLoading && !error && (
             <div className="text-center">
-              <h1 className="text-4xl font-bold text-primary">TruthCard.AI</h1>
-              <p className="text-accent mt-2">Uncover the cringe. Roast your dating profiles.</p>
+              <h1 className="text-5xl font-bold text-primary mb-2">TruthCard.AI</h1>
+              <p className="text-foreground/80 text-lg">Unfiltered Dating Profile Roasts. Prepare for Judgment.</p>
             </div>
           )}
 
           {!roastData && (
-            <ProfileUploadForm
-              onAnalysisStart={handleAnalysisStart}
-              onAnalysisComplete={(data, imgPreview) => handleAnalysisComplete(data, imgPreview)}
-              onAnalysisError={handleAnalysisError}
-              isLoading={isLoading}
-            />
+            <>
+              <DashedSeparator />
+              <ProfileUploadForm
+                onAnalysisStart={handleAnalysisStart}
+                onAnalysisComplete={(data, imgPreview) => handleAnalysisComplete(data, imgPreview)}
+                onAnalysisError={handleAnalysisError}
+                isLoading={isLoading}
+              />
+              <DashedSeparator />
+            </>
           )}
 
           {isLoading && (
-            <div className="flex flex-col items-center justify-center space-y-4 p-8 rounded-lg shadow-xl bg-card/90 backdrop-blur-sm border border-primary/30">
+            <div className="flex flex-col items-center justify-center space-y-4 p-8 rounded-lg shadow-xl bg-card/90 backdrop-blur-sm border border-primary/30 mt-16">
               <Loader2 className="animate-spin h-16 w-16 text-primary" />
               <p className="text-accent text-xl animate-pulse">Analyzing profile... Engaging AI judgment matrix...</p>
               <p className="text-muted-foreground text-sm">Please wait, the truth can be computationally intensive.</p>
@@ -195,7 +194,7 @@ export default function TruthCardPage() {
           )}
 
           {error && !isLoading && (
-            <div className="bg-destructive/20 border border-destructive text-destructive-foreground p-6 rounded-lg shadow-lg space-y-3">
+            <div className="bg-destructive/20 border border-destructive text-destructive-foreground p-6 rounded-lg shadow-lg space-y-3 mt-16">
               <h3 className="font-bold text-2xl text-center">SYSTEM ERROR_</h3>
               <p className="text-center">{error}</p>
               <Button onClick={handleReset} variant="destructive" className="w-full">
@@ -236,4 +235,3 @@ export default function TruthCardPage() {
     </div>
   );
 }
-
