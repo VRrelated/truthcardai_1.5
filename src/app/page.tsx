@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Share2, UserPlus, Download, Terminal } from 'lucide-react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { cn } from '@/lib/utils';
+import SupportUsPopup from '@/components/truthcard/SupportUsPopup';
 
 const introTerminalLines = [
   "Booting TruthCard.AI v1.5...",
@@ -30,7 +31,8 @@ export default function TruthCardPage() {
   const [currentProfileImagePreview, setCurrentProfileImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showIntro, setShowIntro] = useState(true); 
+  const [showIntro, setShowIntro] = useState(true);
+  const [showSupportUsPopup, setShowSupportUsPopup] = useState(false);
 
   const [displayedTerminalLines, setDisplayedTerminalLines] = useState<string[]>([]);
   const [allTerminalLinesDisplayed, setAllTerminalLinesDisplayed] = useState(false);
@@ -87,6 +89,7 @@ export default function TruthCardPage() {
   const handleAnalysisComplete = (data: GenerateCringeIndexOutput, imagePreview: string | null) => {
     setRoastData(data);
     setCurrentProfileImagePreview(imagePreview);
+    setShowSupportUsPopup(true); // Show popup after results are ready
     setIsLoading(false);
     setError(null);
   };
@@ -95,8 +98,6 @@ export default function TruthCardPage() {
     setIsLoading(true);
     setRoastData(null);
     setError(null);
-    // Do not reset currentProfileImagePreview here, it's needed by the AI flow.
-    // It will be set correctly in handleAnalysisComplete or reset in handleReset.
   };
 
   const handleAnalysisError = (errorMessage: string) => {
@@ -114,6 +115,7 @@ export default function TruthCardPage() {
     setIsLoading(false);
     setError(null);
     setCurrentProfileImagePreview(null);
+    setShowSupportUsPopup(false); // Ensure popup is hidden on reset
   };
 
   if (showIntro) {
@@ -232,6 +234,13 @@ export default function TruthCardPage() {
             </>
           )}
         </div>
+        {showSupportUsPopup && roastData && (
+          <SupportUsPopup
+            open={showSupportUsPopup}
+            onOpenChange={setShowSupportUsPopup}
+            gumroadLink="https://vrrelated.gumroad.com/l/attracttherightone"
+          />
+        )}
       </main>
       <footer className="text-center py-6 text-muted-foreground text-sm border-t border-border/30">
         © {new Date().getFullYear()} TruthCard.AI - Dare to know the truth.
