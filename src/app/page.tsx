@@ -94,7 +94,8 @@ export default function TruthCardPage() {
     setIsLoading(true);
     setRoastData(null);
     setError(null);
-    setCurrentProfileImagePreview(null);
+    // Do not reset currentProfileImagePreview here, it's needed by the AI flow.
+    // It will be set correctly in handleAnalysisComplete or reset in handleReset.
   };
 
   const handleAnalysisError = (errorMessage: string) => {
@@ -166,14 +167,11 @@ export default function TruthCardPage() {
       <main className="flex-grow container mx-auto px-4 py-12 flex flex-col items-center">
         <div className="w-full max-w-xl space-y-8">
           {!roastData && !isLoading && !error && (
-            <div className="text-center">
-              <h1 className="text-5xl font-bold text-primary mb-2">TruthCard.AI</h1>
-              <p className="text-foreground/80 text-lg">Unfiltered Dating Profile Roasts. Prepare for Judgment.</p>
-            </div>
-          )}
-
-          {!roastData && (
             <>
+              <div className="text-center">
+                <h1 className="text-5xl font-bold text-primary mb-2">TruthCard.AI</h1>
+                <p className="text-foreground/80 text-lg">Unfiltered Dating Profile Roasts. Prepare for Judgment.</p>
+              </div>
               <DashedSeparator />
               <ProfileUploadForm
                 onAnalysisStart={handleAnalysisStart}
@@ -186,15 +184,15 @@ export default function TruthCardPage() {
           )}
 
           {isLoading && (
-            <div className="flex flex-col items-center justify-center space-y-4 p-8 rounded-lg shadow-xl bg-card/90 backdrop-blur-sm border border-primary/30 mt-16">
+            <div className="flex flex-col items-center justify-center space-y-4 p-8 rounded-lg shadow-xl bg-black/90 backdrop-blur-md border-t-2 border-primary mt-16 w-full max-w-md mx-auto animate-fadeIn">
               <Loader2 className="animate-spin h-16 w-16 text-primary" />
-              <p className="text-accent text-xl animate-pulse">Analyzing profile... Engaging AI judgment matrix...</p>
-              <p className="text-muted-foreground text-sm">Please wait, the truth can be computationally intensive.</p>
+              <p className="text-accent text-xl text-center">Analyzing profile... Engaging AI judgment matrix...</p>
+              <p className="text-muted-foreground text-sm text-center">Please wait, the truth can be computationally intensive.</p>
             </div>
           )}
 
           {error && !isLoading && (
-            <div className="bg-destructive/20 border border-destructive text-destructive-foreground p-6 rounded-lg shadow-lg space-y-3 mt-16">
+            <div className="bg-destructive/20 border border-destructive text-destructive-foreground p-6 rounded-lg shadow-lg space-y-3 mt-16 animate-fadeIn">
               <h3 className="font-bold text-2xl text-center">SYSTEM ERROR_</h3>
               <p className="text-center">{error}</p>
               <Button onClick={handleReset} variant="destructive" className="w-full">
