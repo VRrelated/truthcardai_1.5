@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,7 +7,7 @@ import ProfileUploadForm from '@/components/truthcard/ProfileUploadForm';
 import ResultsDisplay from '@/components/truthcard/ResultsDisplay';
 import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
-import { Zap, Loader2 } from 'lucide-react';
+import { Zap, Loader2, Share2, UserPlus, Download } from 'lucide-react';
 
 export default function TruthCardPage() {
   const [roastData, setRoastData] = useState<GenerateCringeIndexOutput | null>(null);
@@ -15,7 +16,6 @@ export default function TruthCardPage() {
   const [error, setError] = useState<string | null>(null);
   const [showIntro, setShowIntro] = useState(true); // Manage intro screen visibility
 
-  // Effect to manage body class for cyberpunk feel (e.g., no scroll during intro)
   useEffect(() => {
     if (showIntro) {
       document.body.classList.add('overflow-hidden');
@@ -49,10 +49,16 @@ export default function TruthCardPage() {
     setShowIntro(false);
   };
 
+  const handleReset = () => {
+    setRoastData(null);
+    setIsLoading(false);
+    setError(null);
+    setCurrentProfileImagePreview(null);
+  };
+
   if (showIntro) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4 font-mono relative overflow-hidden">
-        {/* Matrix-like background effect placeholder */}
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
           backgroundImage: "linear-gradient(rgba(0,255,0,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,0,0.5) 1px, transparent 1px)",
           backgroundSize: "20px 20px",
@@ -99,7 +105,6 @@ export default function TruthCardPage() {
     );
   }
 
-
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground font-mono">
       <Header />
@@ -128,21 +133,39 @@ export default function TruthCardPage() {
               <p className="text-muted-foreground text-sm">Please wait, the truth can be computationally intensive.</p>
             </div>
           )}
+
           {error && !isLoading && (
             <div className="bg-destructive/20 border border-destructive text-destructive-foreground p-6 rounded-lg shadow-lg space-y-3">
               <h3 className="font-bold text-2xl text-center">SYSTEM ERROR_</h3>
               <p className="text-center">{error}</p>
-              <Button onClick={() => {setError(null); setIsLoading(false); setRoastData(null);}} variant="destructive" className="w-full">
+              <Button onClick={handleReset} variant="destructive" className="w-full">
                 Retry Analysis
               </Button>
             </div>
           )}
+
           {roastData && !isLoading && (
             <>
               <ResultsDisplay data={roastData} profileImagePreview={currentProfileImagePreview} />
-              <Button onClick={() => { setRoastData(null); setIsLoading(false); setError(null); setCurrentProfileImagePreview(null);}} variant="outline" className="w-full mt-6 border-accent text-accent hover:bg-accent hover:text-accent-foreground">
-                Roast Another Profile
-              </Button>
+              <div className="mt-8 w-full max-w-3xl space-y-3 text-center">
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
+                  <Button className="bg-sky-500 hover:bg-sky-600 text-white w-full sm:flex-1 py-3 text-base rounded-md shadow-md hover:shadow-lg transition-shadow">
+                    <Share2 size={18} className="mr-2"/> Share 3D Card / TikTok
+                  </Button>
+                  <Button className="bg-accent text-accent-foreground hover:bg-accent/90 w-full sm:flex-1 py-3 text-base rounded-md shadow-md hover:shadow-lg transition-shadow">
+                    <UserPlus size={18} className="mr-2"/> Challenge a Friend
+                  </Button>
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 w-full sm:flex-1 py-3 text-base rounded-md shadow-md hover:shadow-lg transition-shadow">
+                    <Download size={18} className="mr-2"/> Download TruthCard
+                  </Button>
+                </div>
+                <Button 
+                  onClick={handleReset} 
+                  className="w-full sm:w-1/2 mt-3 bg-secondary hover:bg-secondary/80 text-secondary-foreground py-3 text-base rounded-md shadow-md hover:shadow-lg transition-shadow"
+                >
+                  Roast Another Profile
+                </Button>
+              </div>
             </>
           )}
         </div>

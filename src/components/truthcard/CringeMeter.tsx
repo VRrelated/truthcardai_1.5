@@ -1,4 +1,9 @@
+
 "use client";
+
+// This component is no longer used directly in TruthCard.tsx as per the new design.
+// Keeping the file in case it's needed for other purposes or future enhancements.
+// The Cringe Index score is now displayed in the title on ResultsDisplay.tsx.
 
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
@@ -9,10 +14,10 @@ interface CringeMeterProps {
 
 export default function CringeMeter({ score }: CringeMeterProps) {
   const getMeterColor = () => {
-    if (score > 75) return "bg-destructive"; // High cringe
-    if (score > 50) return "bg-yellow-500"; // Medium cringe
-    if (score > 25) return "bg-sky-500"; // Low cringe
-    return "bg-accent"; // Very low/no cringe
+    if (score > 75) return "bg-destructive"; 
+    if (score > 50) return "bg-yellow-500"; 
+    if (score > 25) return "bg-sky-500"; 
+    return "bg-accent"; 
   };
 
   return (
