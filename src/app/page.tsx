@@ -7,17 +7,46 @@ import ProfileUploadForm from '@/components/truthcard/ProfileUploadForm';
 import ResultsDisplay from '@/components/truthcard/ResultsDisplay';
 import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
-import { Zap, Loader2, Share2, UserPlus, Download } from 'lucide-react';
+import { Zap, Loader2, Share2, UserPlus, Download, Star, Terminal } from 'lucide-react';
+
+const introTerminalLines = [
+  "Booting TruthCard.AI v1.5...",
+  "Initializing Cybernetic Roast Engine...",
+  "Calibrating Cringe Detectors...",
+  "WARNING: Brutal Honesty Enabled.",
+  "Drag and drop your dating profile screenshot to begin.",
+  "We are currently in development stage.",
+  "Please consider clicking the SELECT PRO TIER.",
+];
 
 export default function TruthCardPage() {
   const [roastData, setRoastData] = useState<GenerateCringeIndexOutput | null>(null);
   const [currentProfileImagePreview, setCurrentProfileImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showIntro, setShowIntro] = useState(true); // Manage intro screen visibility
+  const [showIntro, setShowIntro] = useState(true); 
+
+  // For onboarding terminal
+  const [displayedTerminalLines, setDisplayedTerminalLines] = useState<string[]>([]);
+  const [allTerminalLinesDisplayed, setAllTerminalLinesDisplayed] = useState(false);
+
 
   useEffect(() => {
     if (showIntro) {
+      setDisplayedTerminalLines([]); 
+      setAllTerminalLinesDisplayed(false);
+      let currentDelay = 200; 
+      const lineDelay = 600; 
+
+      introTerminalLines.forEach((line, index) => {
+        setTimeout(() => {
+          setDisplayedTerminalLines((prev) => [...prev, line]);
+          if (index === introTerminalLines.length - 1) {
+            setTimeout(() => setAllTerminalLinesDisplayed(true), lineDelay / 2); 
+          }
+        }, currentDelay);
+        currentDelay += lineDelay;
+      });
       document.body.classList.add('overflow-hidden');
     } else {
       document.body.classList.remove('overflow-hidden');
@@ -60,7 +89,7 @@ export default function TruthCardPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4 font-mono relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
-          backgroundImage: "linear-gradient(rgba(0,255,0,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,0,0.5) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(rgba(0,255,0,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,0,0.3) 1px, transparent 1px)",
           backgroundSize: "20px 20px",
           animation: "matrixScroll 10s linear infinite",
         }}></div>
@@ -69,35 +98,47 @@ export default function TruthCardPage() {
             0% { background-position: 0 0; }
             100% { background-position: 0 -200px; }
           }
-          @keyframes glitch {
-            0% { text-shadow: 2px 2px 0px var(--color-accent), -2px -2px 0px var(--color-primary); transform: translate(0,0); }
-            25% { text-shadow: -2px 2px 0px var(--color-accent), 2px -2px 0px var(--color-primary); transform: translate(1px,-1px); }
-            50% { text-shadow: 2px -2px 0px var(--color-accent), -2px 2px 0px var(--color-primary); transform: translate(-1px,1px); }
-            75% { text-shadow: -2px -2px 0px var(--color-accent), 2px 2px 0px var(--color-primary); transform: translate(1px,1px); }
-            100% { text-shadow: 2px 2px 0px var(--color-accent), -2px -2px 0px var(--color-primary); transform: translate(0,0); }
-          }
-          .glitch-effect { animation: glitch 0.3s infinite; }
-          :root { --color-accent: hsl(129 100% 52%); --color-primary: hsl(288 83% 54%); }
         `}</style>
-        <div className="z-10 text-center space-y-6 p-8 bg-card/80 backdrop-blur-md rounded-lg shadow-2xl border border-primary">
-          <h1 className="text-5xl md:text-7xl font-black text-primary glitch-effect">TruthCard.AI</h1>
-          <p className="text-xl md:text-2xl text-accent animate-pulse">
-            // DARE TO KNOW THE DIGITAL TRUTH //
-          </p>
-          <p className="text-md md:text-lg text-foreground/80 max-w-xl">
-            Upload a dating profile. Our AI psycho-analyzes it, detects red flags, and generates a Cringe Index.
-            No sugar-coating. Pure, unadulterated digital judgment.
-          </p>
-          <Button
-            onClick={handleStartRoasting}
-            size="lg"
-            className="text-xl py-8 px-10 bg-accent text-accent-foreground hover:bg-accent/90 hover:text-accent-foreground shadow-lg transform hover:scale-105 transition-transform duration-150"
-          >
-            <Zap className="mr-2 h-6 w-6 animate-ping absolute opacity-75" />
-            <Zap className="mr-2 h-6 w-6" />
-            INITIATE ROAST SEQUENCE
-          </Button>
+        
+        <div className="z-10 w-full max-w-3xl p-6 bg-black/80 backdrop-blur-sm rounded-lg shadow-2xl border border-primary">
+          <div className="flex items-center text-accent mb-4">
+            <Terminal className="mr-2 h-5 w-5" /> TruthCard.AI Console
+          </div>
+          <div className="space-y-1 h-48 overflow-y-auto pr-2">
+            {displayedTerminalLines.map((line, index) => (
+              <p key={index} className="text-sm">
+                <span className="text-primary">&gt;&nbsp;</span>
+                <span className="text-accent">{line}</span>
+                {index === displayedTerminalLines.length - 1 && !allTerminalLinesDisplayed && (
+                  <span className="inline-block w-2 h-4 bg-accent animate-ping ml-1"></span>
+                )}
+              </p>
+            ))}
+          </div>
+
+          {allTerminalLinesDisplayed && (
+            <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center animate-fadeIn">
+              <Button
+                onClick={handleStartRoasting}
+                size="lg"
+                className="text-lg py-4 px-6 bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg hover:scale-105 transition-transform duration-150 flex-1"
+              >
+                <Zap className="mr-2 h-5 w-5" />
+                PROCEED TO ROAST
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg py-4 px-6 border-primary text-primary hover:bg-primary/10 hover:text-primary shadow-lg hover:scale-105 transition-transform duration-150 flex-1"
+                onClick={() => { alert("Pro Tier coming soon!"); }}
+              >
+                <Star className="mr-2 h-5 w-5" /> 
+                SELECT PRO TIER
+              </Button>
+            </div>
+          )}
         </div>
+
         <footer className="absolute bottom-4 text-center text-muted-foreground text-xs z-10">
           TruthCard.AI Terminal v1.5 // System Ready // {new Date().getFullYear()}
         </footer>
@@ -176,3 +217,4 @@ export default function TruthCardPage() {
     </div>
   );
 }
+
