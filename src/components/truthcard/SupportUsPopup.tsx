@@ -32,16 +32,16 @@ export default function SupportUsPopup({ open, onOpenChange, gumroadLink }: Supp
             Support TruthCard.AI's Future!
           </AlertDialogTitle>
           <AlertDialogDescription className="text-center text-foreground/90 pt-2 space-y-3">
-            <p>
+            <div>
               Hey there! I'm a solo developer passionately building TruthCard.AI.
               Your support, no matter how small, directly helps me cover server costs,
               develop exciting new features (like advanced AI analysis and those slick 3D cards!),
               and dedicate more time to making this app even more insightful and entertaining.
-            </p>
-            <p>
+            </div>
+            <div>
               If TruthCard.AI brought a smile to your face or gave you some 'uh-oh'
               moments, please consider chipping in. Every contribution fuels the fire for more roasts!
-            </p>
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="mt-4 sm:justify-center gap-3">
