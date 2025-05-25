@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, type CSSProperties } from 'react';
+import { useState, useEffect, type CSSProperties, useRef } from 'react';
 import type { GenerateCringeIndexOutput } from '@/ai/flows/generate-cringe-index';
 import ProfileUploadForm from '@/components/truthcard/ProfileUploadForm';
 import ResultsDisplay from '@/components/truthcard/ResultsDisplay';
@@ -37,6 +37,7 @@ export default function TruthCardPage() {
   const [displayedTerminalLines, setDisplayedTerminalLines] = useState<string[]>([]);
   const [allTerminalLinesDisplayed, setAllTerminalLinesDisplayed] = useState(false);
   const [isTerminalFadingOut, setIsTerminalFadingOut] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
 
   useEffect(() => {
@@ -53,6 +54,13 @@ export default function TruthCardPage() {
             setDisplayedTerminalLines((prev) => [...prev, line]);
             if (index === introTerminalLines.length - 1) {
               setAllTerminalLinesDisplayed(true);
+              // Play sound effect
+              if (audioRef.current) {
+                audioRef.current.play().catch(error => {
+                  // Autoplay might be blocked by the browser, good to handle or log
+                  console.warn("Terminal complete sound play failed:", error);
+                });
+              }
               setTimeout(() => {
                 if (showIntro) { 
                    setIsTerminalFadingOut(true); 
@@ -125,6 +133,12 @@ export default function TruthCardPage() {
         isTerminalFadingOut && "animate-fadeOut"
         )}
       >
+        {/* 
+          IMPORTANT: Replace 'YOUR_SOUND_FILE.mp3' with the actual path to your sound file.
+          For example, if you place 'terminal-complete.mp3' in your 'public/sounds/' directory,
+          the src would be '/sounds/terminal-complete.mp3'.
+        */}
+        <audio ref={audioRef} src="/sounds/terminal-complete-placeholder.mp3" preload="auto"></audio>
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
           backgroundImage: "linear-gradient(hsla(var(--accent)/0.3) 1px, transparent 1px), linear-gradient(90deg, hsla(var(--accent)/0.3) 1px, transparent 1px)",
           backgroundSize: "20px 20px",
