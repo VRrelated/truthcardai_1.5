@@ -137,7 +137,7 @@ export default function TruthCardPage() {
           }
         `}</style>
         
-        <div className="z-10 w-full max-w-3xl p-6 bg-black/80 backdrop-blur-sm rounded-lg shadow-2xl border border-primary">
+        <div className="z-10 w-full max-w-3xl p-6 bg-black/80 backdrop-blur-sm rounded-lg shadow-2xl border border-border">
           <div className="flex items-center text-accent mb-4">
             <Terminal className="mr-2 h-5 w-5" /> TruthCard.AI Console
           </div>
