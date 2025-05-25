@@ -34,59 +34,97 @@ export default function TruthCardPage() {
   const [showIntro, setShowIntro] = useState(true);
   const [showSupportUsPopup, setShowSupportUsPopup] = useState(false);
 
-  const [displayedTerminalLines, setDisplayedTerminalLines] = useState<string[]>([]);
+  // New state for typewriter effect
+  const [displayedLinesContent, setDisplayedLinesContent] = useState<string[]>([]);
+  const [currentLineBeingTypedIndex, setCurrentLineBeingTypedIndex] = useState(0);
+  const [currentCharInLineIndex, setCurrentCharInLineIndex] = useState(0);
+  
   const [allTerminalLinesDisplayed, setAllTerminalLinesDisplayed] = useState(false);
   const [isTerminalFadingOut, setIsTerminalFadingOut] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const supportPopupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 
+  // Effect for high-level intro state and initialization
   useEffect(() => {
     if (showIntro && !isTerminalFadingOut) {
-      setDisplayedTerminalLines([]);
+      // Initialize/Reset states for typewriter
+      setDisplayedLinesContent([]);
+      setCurrentLineBeingTypedIndex(0);
+      setCurrentCharInLineIndex(0);
       setAllTerminalLinesDisplayed(false);
-      let currentDelay = 200;
-      const lineDisplayDuration = 600; 
-      const postCompletionDelay = 1000; 
-
-      introTerminalLines.forEach((line, index) => {
-        setTimeout(() => {
-          if (showIntro && !isTerminalFadingOut) { 
-            setDisplayedTerminalLines((prev) => [...prev, line]);
-            if (index === introTerminalLines.length - 1) {
-              setAllTerminalLinesDisplayed(true);
-              // Play sound effect
-              if (audioRef.current) {
-                audioRef.current.play().catch(error => {
-                  // Autoplay might be blocked by the browser, good to handle or log
-                  console.warn("Terminal complete sound play failed:", error);
-                });
-              }
-              setTimeout(() => {
-                if (showIntro) { 
-                   setIsTerminalFadingOut(true); 
-                }
-              }, postCompletionDelay);
-            }
-          }
-        }, currentDelay);
-        currentDelay += lineDisplayDuration;
-      });
       document.body.classList.add('overflow-hidden');
     } else if (!showIntro) {
       document.body.classList.remove('overflow-hidden');
     }
     
-    // Cleanup function for the component unmount
     return () => {
       if (supportPopupTimeoutRef.current) {
         clearTimeout(supportPopupTimeoutRef.current);
       }
-      if (!showIntro) { 
+      if (!showIntro || isTerminalFadingOut) { 
         document.body.classList.remove('overflow-hidden');
       }
     };
   }, [showIntro, isTerminalFadingOut]);
+
+
+  // Effect for typewriter animation
+  useEffect(() => {
+    if (!showIntro || isTerminalFadingOut) return;
+
+    const charTypingSpeed = 50; 
+    const delayBetweenLines = 200;
+    const postCompletionTotalDelay = 1000;
+
+    if (currentLineBeingTypedIndex < introTerminalLines.length) {
+      const lineToType = introTerminalLines[currentLineBeingTypedIndex];
+      if (currentCharInLineIndex < lineToType.length) {
+        const charTimer = setTimeout(() => {
+          setDisplayedLinesContent(prevLines => {
+            const newLines = [...prevLines];
+            if (newLines.length === currentLineBeingTypedIndex) {
+              newLines.push(''); // Initialize new line string
+            }
+            newLines[currentLineBeingTypedIndex] += lineToType[currentCharInLineIndex];
+            return newLines;
+          });
+          setCurrentCharInLineIndex(prev => prev + 1);
+        }, charTypingSpeed);
+        return () => clearTimeout(charTimer);
+      } else {
+        // Line finished typing, move to next line after a delay
+        const lineEndTimer = setTimeout(() => {
+          setCurrentLineBeingTypedIndex(prev => prev + 1);
+          setCurrentCharInLineIndex(0);
+        }, delayBetweenLines);
+        return () => clearTimeout(lineEndTimer);
+      }
+    } else {
+      // All lines have been typed out
+      if (!allTerminalLinesDisplayed) {
+        setAllTerminalLinesDisplayed(true);
+        if (audioRef.current) {
+          audioRef.current.play().catch(error => {
+            console.warn("Terminal complete sound play failed:", error);
+          });
+        }
+        setTimeout(() => {
+          // Check showIntro and isTerminalFadingOut again before setting, 
+          // in case the user navigated away or state changed rapidly
+          if (showIntro && !isTerminalFadingOut) { 
+             setIsTerminalFadingOut(true); 
+          }
+        }, postCompletionTotalDelay);
+      }
+    }
+  }, [
+    showIntro, 
+    isTerminalFadingOut, 
+    currentLineBeingTypedIndex, 
+    currentCharInLineIndex, 
+    allTerminalLinesDisplayed
+  ]);
 
 
   useEffect(() => {
@@ -106,11 +144,9 @@ export default function TruthCardPage() {
     setIsLoading(false);
     setError(null);
 
-    // Clear any existing timeout before setting a new one
     if (supportPopupTimeoutRef.current) {
       clearTimeout(supportPopupTimeoutRef.current);
     }
-    // Show popup after a 5-second delay
     supportPopupTimeoutRef.current = setTimeout(() => {
       setShowSupportUsPopup(true);
     }, 5000);
@@ -120,7 +156,6 @@ export default function TruthCardPage() {
     setIsLoading(true);
     setRoastData(null);
     setError(null);
-    // Ensure popup doesn't show if analysis is restarted
     if (supportPopupTimeoutRef.current) {
       clearTimeout(supportPopupTimeoutRef.current);
     }
@@ -131,7 +166,6 @@ export default function TruthCardPage() {
     setError(errorMessage);
     setIsLoading(false);
     setRoastData(null);
-    // Ensure popup doesn't show on error
     if (supportPopupTimeoutRef.current) {
       clearTimeout(supportPopupTimeoutRef.current);
     }
@@ -147,7 +181,6 @@ export default function TruthCardPage() {
     setIsLoading(false);
     setError(null);
     setCurrentProfileImagePreview(null);
-    // Clear timeout and hide popup on reset
     if (supportPopupTimeoutRef.current) {
       clearTimeout(supportPopupTimeoutRef.current);
       supportPopupTimeoutRef.current = null;
@@ -175,23 +208,32 @@ export default function TruthCardPage() {
           }
         `}</style>
         
-        <div className="z-10 w-full max-w-3xl p-6 bg-black/80 backdrop-blur-sm rounded-lg shadow-2xl border border-border">
+        <div className="z-10 w-full max-w-3xl p-6 bg-black/80 backdrop-blur-sm rounded-lg shadow-[0_0_20px_rgba(140,82,255,0.4)] border border-border">
           <div className="flex items-center text-accent mb-4">
             <Terminal className="mr-2 h-5 w-5" /> TruthCard.AI Console
           </div>
           <div className="space-y-1 h-48 overflow-y-auto pr-2">
-            {displayedTerminalLines.map((line, index) => (
-              <p key={index} className="text-sm">
+            {displayedLinesContent.map((line, idx) => (
+              <p key={idx} className="text-sm">
                 <span className="text-primary">&gt;&nbsp;</span>
                 <span className="text-accent">{line}</span>
-                {index === displayedTerminalLines.length - 1 && !allTerminalLinesDisplayed && !isTerminalFadingOut && (
+                {/* Blinking cursor for the line currently being typed */}
+                {idx === currentLineBeingTypedIndex && currentLineBeingTypedIndex < introTerminalLines.length && !allTerminalLinesDisplayed && !isTerminalFadingOut && (
                   <span className="inline-block w-2 h-4 bg-accent animate-ping ml-1"></span>
                 )}
-                 {index === displayedTerminalLines.length - 1 && allTerminalLinesDisplayed && !isTerminalFadingOut && (
+                {/* Solid cursor for the last line after all typing is done and before fading */}
+                {idx === introTerminalLines.length -1 && allTerminalLinesDisplayed && !isTerminalFadingOut && (
                   <span className="inline-block w-2 h-4 bg-accent ml-1"></span>
                 )}
               </p>
             ))}
+             {/* Fallback blinking cursor if displayedLinesContent is empty but typing should start */}
+            {displayedLinesContent.length === 0 && currentLineBeingTypedIndex === 0 && !allTerminalLinesDisplayed && !isTerminalFadingOut && (
+                 <p className="text-sm">
+                    <span className="text-primary">&gt;&nbsp;</span>
+                    <span className="inline-block w-2 h-4 bg-accent animate-ping ml-1"></span>
+                 </p>
+            )}
           </div>
         </div>
 
@@ -286,5 +328,6 @@ export default function TruthCardPage() {
     </div>
   );
 }
+    
 
     
