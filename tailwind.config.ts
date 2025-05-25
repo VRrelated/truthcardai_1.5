@@ -96,15 +96,28 @@ export default {
           '0%': { opacity: '1' },
           '100%': { opacity: '0' },
         },
+        'floatPlus': { /* Renamed from float to avoid conflict if user has global 'float' */
+          '0%, 100%': { transform: 'translateY(0) rotateZ(-2deg)' }, /* Reduced rotation */
+          '50%': { transform: 'translateY(-10px) rotateZ(2deg)' }, /* Reduced translation and rotation */
+        },
+        'glitch': { /* Main glitch animation for the text itself */
+          '0%': { transform: 'translate(0)' },
+          '20%': { transform: 'translate(-2px, 2px) skewX(5deg)' },
+          '40%': { transform: 'translate(1px, -1px) skewX(-3deg)' },
+          '60%': { transform: 'translate(-1px, 1px) skewX(4deg)' },
+          '80%': { transform: 'translate(1px, -2px) skewX(-2deg)' },
+          '100%': { transform: 'translate(0)' },
+        },
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
         'fadeIn': 'fadeIn 0.5s ease-out forwards',
         'fadeOut': 'fadeOut 0.5s ease-out forwards',
+        'floatPlus': 'floatPlus 6s ease-in-out infinite',
+        'glitch': 'glitch 1s infinite linear alternate-reverse',
   		}
   	}
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-

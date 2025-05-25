@@ -34,7 +34,6 @@ export default function TruthCardPage() {
   const [showIntro, setShowIntro] = useState(true);
   const [showSupportUsPopup, setShowSupportUsPopup] = useState(false);
 
-  // New state for typewriter effect
   const [displayedLinesContent, setDisplayedLinesContent] = useState<string[]>([]);
   const [currentLineBeingTypedIndex, setCurrentLineBeingTypedIndex] = useState(0);
   const [currentCharInLineIndex, setCurrentCharInLineIndex] = useState(0);
@@ -44,11 +43,8 @@ export default function TruthCardPage() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const supportPopupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-
-  // Effect for high-level intro state and initialization
   useEffect(() => {
     if (showIntro && !isTerminalFadingOut) {
-      // Initialize/Reset states for typewriter
       setDisplayedLinesContent([]);
       setCurrentLineBeingTypedIndex(0);
       setCurrentCharInLineIndex(0);
@@ -68,8 +64,6 @@ export default function TruthCardPage() {
     };
   }, [showIntro, isTerminalFadingOut]);
 
-
-  // Effect for typewriter animation
   useEffect(() => {
     if (!showIntro || isTerminalFadingOut) return;
 
@@ -84,7 +78,7 @@ export default function TruthCardPage() {
           setDisplayedLinesContent(prevLines => {
             const newLines = [...prevLines];
             if (newLines.length === currentLineBeingTypedIndex) {
-              newLines.push(''); // Initialize new line string
+              newLines.push(''); 
             }
             newLines[currentLineBeingTypedIndex] += lineToType[currentCharInLineIndex];
             return newLines;
@@ -93,7 +87,6 @@ export default function TruthCardPage() {
         }, charTypingSpeed);
         return () => clearTimeout(charTimer);
       } else {
-        // Line finished typing, move to next line after a delay
         const lineEndTimer = setTimeout(() => {
           setCurrentLineBeingTypedIndex(prev => prev + 1);
           setCurrentCharInLineIndex(0);
@@ -101,7 +94,6 @@ export default function TruthCardPage() {
         return () => clearTimeout(lineEndTimer);
       }
     } else {
-      // All lines have been typed out
       if (!allTerminalLinesDisplayed) {
         setAllTerminalLinesDisplayed(true);
         if (audioRef.current) {
@@ -110,8 +102,6 @@ export default function TruthCardPage() {
           });
         }
         setTimeout(() => {
-          // Check showIntro and isTerminalFadingOut again before setting, 
-          // in case the user navigated away or state changed rapidly
           if (showIntro && !isTerminalFadingOut) { 
              setIsTerminalFadingOut(true); 
           }
@@ -126,7 +116,6 @@ export default function TruthCardPage() {
     allTerminalLinesDisplayed
   ]);
 
-
   useEffect(() => {
     if (isTerminalFadingOut) {
       const fadeOutDuration = 500; 
@@ -136,7 +125,6 @@ export default function TruthCardPage() {
       return () => clearTimeout(timer);
     }
   }, [isTerminalFadingOut]);
-
 
   const handleAnalysisComplete = (data: GenerateCringeIndexOutput, imagePreview: string | null) => {
     setRoastData(data);
@@ -217,17 +205,14 @@ export default function TruthCardPage() {
               <p key={idx} className="text-sm">
                 <span className="text-primary">&gt;&nbsp;</span>
                 <span className="text-accent">{line}</span>
-                {/* Blinking cursor for the line currently being typed */}
                 {idx === currentLineBeingTypedIndex && currentLineBeingTypedIndex < introTerminalLines.length && !allTerminalLinesDisplayed && !isTerminalFadingOut && (
                   <span className="inline-block w-2 h-4 bg-accent animate-ping ml-1"></span>
                 )}
-                {/* Solid cursor for the last line after all typing is done and before fading */}
                 {idx === introTerminalLines.length -1 && allTerminalLinesDisplayed && !isTerminalFadingOut && (
                   <span className="inline-block w-2 h-4 bg-accent ml-1"></span>
                 )}
               </p>
             ))}
-             {/* Fallback blinking cursor if displayedLinesContent is empty but typing should start */}
             {displayedLinesContent.length === 0 && currentLineBeingTypedIndex === 0 && !allTerminalLinesDisplayed && !isTerminalFadingOut && (
                  <p className="text-sm">
                     <span className="text-primary">&gt;&nbsp;</span>
@@ -267,15 +252,19 @@ export default function TruthCardPage() {
           )}
 
           {isLoading && (
-            <div className="flex flex-col items-center justify-center space-y-4 p-8 rounded-lg shadow-xl bg-card backdrop-blur-md border-t-2 border-primary mt-16 w-full max-w-md mx-auto animate-fadeIn">
+            <div className={cn(
+              "flex flex-col items-center justify-center space-y-6 p-8 rounded-lg mt-16 w-full max-w-md mx-auto animate-fadeIn",
+              "bg-[radial-gradient(circle_at_center,_#7B2BFF_0%,_#3A0CA3_100%)]",
+              "shadow-[0_0_25px_#E826FF] animate-floatPlus [transform-style:preserve-3d]"
+            )}>
               <DotLottieReact
                 src="https://lottie.host/202347a9-0b47-4bc3-b1a2-38a0321e7670/Pja9uHpvCZ.lottie"
                 loop
                 autoplay
                 style={{ width: '150px', height: '150px' }}
               />
-              <p className="text-accent text-xl text-center pt-4">Analyzing profile... Engaging AI judgment matrix...</p>
-              <p className="text-muted-foreground text-sm text-center">Please wait, the truth can be computationally intensive.</p>
+              <p className="text-accent text-xl text-center pt-2 animate-glitch" data-text="ANALYZING PROFILE... 37% CRINGE DETECTED">ANALYZING PROFILE... 37% CRINGE DETECTED</p>
+              <p className="text-muted-foreground text-xs text-center uppercase tracking-wider">TRUTHCARD AI V3.7 • SCANNING FOR RED FLAGS...</p>
             </div>
           )}
 
@@ -328,6 +317,4 @@ export default function TruthCardPage() {
     </div>
   );
 }
-    
-
     

@@ -118,3 +118,70 @@ body {
   border-color: hsl(var(--foreground));
 }
 
+/* Cyberpunk Glitch Animation */
+@keyframes glitch-animation {
+  0% {
+    clip-path: inset(calc(random() * 70%) 0 calc(random() * 20%) 0);
+    transform: translate(calc(random() * -10px + 5px), calc(random() * -10px + 5px));
+  }
+  20% {
+    clip-path: inset(calc(random() * 20%) 0 calc(random() * 60%) 0);
+    transform: translate(calc(random() * -5px + 2.5px), calc(random() * -5px + 2.5px));
+  }
+  40% {
+    clip-path: inset(calc(random() * 50%) 0 calc(random() * 30%) 0);
+    transform: translate(calc(random() * -8px + 4px), calc(random() * -8px + 4px));
+  }
+  60% {
+    clip-path: inset(calc(random() * 10%) 0 calc(random() * 80%) 0);
+    transform: translate(calc(random() * -12px + 6px), calc(random() * -12px + 6px));
+  }
+  80% {
+    clip-path: inset(calc(random() * 40%) 0 calc(random() * 10%) 0);
+    transform: translate(calc(random() * -6px + 3px), calc(random() * -6px + 3px));
+  }
+  100% {
+    clip-path: inset(calc(random() * 70%) 0 calc(random() * 20%) 0);
+    transform: translate(0,0);
+  }
+}
+
+
+.animate-glitch {
+  position: relative;
+  animation: glitch-animation-main 1.5s infinite linear alternate-reverse;
+}
+
+.animate-glitch::before,
+.animate-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: hsl(var(--background)); /* Match background */
+  overflow: hidden;
+}
+
+.animate-glitch::before {
+  left: 2px;
+  text-shadow: -1px 0 hsl(var(--primary)); /* Use primary color for glitch */
+  animation: glitch-animation 2s infinite linear alternate-reverse;
+}
+
+.animate-glitch::after {
+  left: -2px;
+  text-shadow: -1px 0 hsl(var(--accent)); /* Use accent color for glitch */
+  animation: glitch-animation 1.5s infinite linear alternate-reverse; /* Slightly different timing */
+}
+
+/* Simplified keyframes for the main text if needed, or to combine with above pseudo-elements */
+@keyframes glitch-animation-main {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(2px, 1px); }
+  80% { transform: translate(1px, -2px); }
+  100% { transform: translate(0); }
+}
