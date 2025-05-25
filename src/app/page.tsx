@@ -38,6 +38,7 @@ export default function TruthCardPage() {
   const [allTerminalLinesDisplayed, setAllTerminalLinesDisplayed] = useState(false);
   const [isTerminalFadingOut, setIsTerminalFadingOut] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const supportPopupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 
   useEffect(() => {
@@ -75,7 +76,12 @@ export default function TruthCardPage() {
     } else if (!showIntro) {
       document.body.classList.remove('overflow-hidden');
     }
+    
+    // Cleanup function for the component unmount
     return () => {
+      if (supportPopupTimeoutRef.current) {
+        clearTimeout(supportPopupTimeoutRef.current);
+      }
       if (!showIntro) { 
         document.body.classList.remove('overflow-hidden');
       }
@@ -97,21 +103,39 @@ export default function TruthCardPage() {
   const handleAnalysisComplete = (data: GenerateCringeIndexOutput, imagePreview: string | null) => {
     setRoastData(data);
     setCurrentProfileImagePreview(imagePreview);
-    setShowSupportUsPopup(true); // Show popup after results are ready
     setIsLoading(false);
     setError(null);
+
+    // Clear any existing timeout before setting a new one
+    if (supportPopupTimeoutRef.current) {
+      clearTimeout(supportPopupTimeoutRef.current);
+    }
+    // Show popup after a 5-second delay
+    supportPopupTimeoutRef.current = setTimeout(() => {
+      setShowSupportUsPopup(true);
+    }, 5000);
   };
 
   const handleAnalysisStart = () => {
     setIsLoading(true);
     setRoastData(null);
     setError(null);
+    // Ensure popup doesn't show if analysis is restarted
+    if (supportPopupTimeoutRef.current) {
+      clearTimeout(supportPopupTimeoutRef.current);
+    }
+    setShowSupportUsPopup(false);
   };
 
   const handleAnalysisError = (errorMessage: string) => {
     setError(errorMessage);
     setIsLoading(false);
     setRoastData(null);
+    // Ensure popup doesn't show on error
+    if (supportPopupTimeoutRef.current) {
+      clearTimeout(supportPopupTimeoutRef.current);
+    }
+    setShowSupportUsPopup(false);
   };
   
   const handleStartRoasting = () => {
@@ -123,7 +147,12 @@ export default function TruthCardPage() {
     setIsLoading(false);
     setError(null);
     setCurrentProfileImagePreview(null);
-    setShowSupportUsPopup(false); // Ensure popup is hidden on reset
+    // Clear timeout and hide popup on reset
+    if (supportPopupTimeoutRef.current) {
+      clearTimeout(supportPopupTimeoutRef.current);
+      supportPopupTimeoutRef.current = null;
+    }
+    setShowSupportUsPopup(false); 
   };
 
   if (showIntro) {
@@ -133,11 +162,6 @@ export default function TruthCardPage() {
         isTerminalFadingOut && "animate-fadeOut"
         )}
       >
-        {/* 
-          IMPORTANT: Replace 'YOUR_SOUND_FILE.mp3' with the actual path to your sound file.
-          For example, if you place 'terminal-complete.mp3' in your 'public/sounds/' directory,
-          the src would be '/sounds/terminal-complete.mp3'.
-        */}
         <audio ref={audioRef} src="/sounds/terminal-complete-placeholder.mp3" preload="auto"></audio>
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
           backgroundImage: "linear-gradient(hsla(var(--accent)/0.3) 1px, transparent 1px), linear-gradient(90deg, hsla(var(--accent)/0.3) 1px, transparent 1px)",
@@ -262,3 +286,5 @@ export default function TruthCardPage() {
     </div>
   );
 }
+
+    
