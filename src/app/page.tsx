@@ -19,7 +19,7 @@ const introTerminalLines = [
   "WARNING: Brutal Honesty Enabled.",
   "Drag and drop your dating profile screenshot to begin.",
   "We are currently in development stage.",
-  "Please consider clicking the SELECT PRO TIER.",
+  "Please consider clicking the SUPPORT US BUTTON",
 ];
 
 const DashedSeparator = () => (
@@ -253,9 +253,9 @@ export default function TruthCardPage() {
 
           {isLoading && (
             <div className={cn(
-              "flex flex-col items-center justify-center space-y-6 p-8 rounded-lg mt-16 w-full max-w-md mx-auto animate-fadeIn",
-              "bg-[radial-gradient(circle_at_center,_#7B2BFF_0%,_#3A0CA3_100%)]",
-              "shadow-[0_0_25px_#E826FF] animate-floatPlus [transform-style:preserve-3d]"
+              "flex flex-col items-center justify-center space-y-6 p-8 rounded-lg mt-16 w-full max-w-md mx-auto animate-fadeIn"
+              // Removed: "bg-[radial-gradient(circle_at_center,_#7B2BFF_0%,_#3A0CA3_100%)]"
+              // Removed: "shadow-[0_0_25px_#E826FF] animate-floatPlus [transform-style:preserve-3d]"
             )}>
               <DotLottieReact
                 src="https://lottie.host/202347a9-0b47-4bc3-b1a2-38a0321e7670/Pja9uHpvCZ.lottie"
