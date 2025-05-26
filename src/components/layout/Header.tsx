@@ -1,6 +1,6 @@
 
 import Link from 'next/link';
-import Image from 'next/image';
+import { ShieldAlert } from 'lucide-react'; // Restored ShieldAlert icon
 
 export default function Header() {
   return (
@@ -8,15 +8,9 @@ export default function Header() {
       <div className="container mx-auto flex items-center justify-between">
         <Link
           href="/"
-          className="flex items-center gap-3 text-2xl font-bold text-primary hover:text-primary/90 transition-colors" // Adjusted gap for image
+          className="flex items-center gap-2 text-2xl font-bold text-primary hover:text-primary/90 transition-colors"
         >
-          <Image
-            src="/truthcard-logo.png" // Assumes truthcard-logo.png is in /public
-            alt="TruthCard.AI Logo"
-            width={32} // Adjust size as needed
-            height={32} // Adjust size as needed
-            className="rounded-full" // Add if your image isn't transparent and needs to be visually circular
-          />
+          <ShieldAlert size={28} className="text-primary" /> {/* Reverted to ShieldAlert */}
           TruthCard.AI
         </Link>
         {/* Future navigation items can go here */}

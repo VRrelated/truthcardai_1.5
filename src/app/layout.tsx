@@ -16,10 +16,7 @@ const geistMono = GeistMonoFont({ // Use the renamed import
 export const metadata: Metadata = {
   title: 'TruthCard.AI: Dating Profile Roaster',
   description: 'Uncover the cringe. Roast your dating profiles with AI.',
-  icons: {
-    icon: '/truthcard-logo.png', // Assumes truthcard-logo.png is in /public
-    apple: '/truthcard-logo.png', // For Apple touch icon
-  },
+  // icons property removed to revert favicon changes
 };
 
 export default function RootLayout({
