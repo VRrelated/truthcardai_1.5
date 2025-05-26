@@ -81,4 +81,4 @@ If you love the idea of being roasted into self-improvement:
 
 ---
 
-Made with 💻 and way too much caffeine by [@VRrelated01](https://www.instagram.com/vrrelated01/)
+Made with 💻 and way too much caffeine by [@VRrelated01](https://www.instagram.com/vrrelated01/)# truthcard_ai_1.5
