@@ -1,3 +1,4 @@
+
 // src/ai/flows/generate-cringe-index.ts
 'use server';
 /**
@@ -58,7 +59,17 @@ const generateCringeIndexFlow = ai.defineFlow(
     outputSchema: GenerateCringeIndexOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    const result = await prompt(input);
+    const output = result.output;
+
+    if (!output) {
+      console.error("GenerateCringeIndexFlow: AI model did not return a valid output.", {
+        candidates: result.candidates?.length,
+        usage: result.usage,
+        error: result.error, // Log any error reported in the result
+      });
+      throw new Error('AI model failed to generate a valid Cringe Index response. The content might have been blocked or an internal error occurred.');
+    }
+    return output;
   }
 );

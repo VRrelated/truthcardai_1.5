@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -63,7 +64,17 @@ const detectRedFlagsFlow = ai.defineFlow(
     outputSchema: DetectRedFlagsOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    const result = await prompt(input);
+    const output = result.output;
+
+    if (!output) {
+      console.error("DetectRedFlagsFlow: AI model did not return a valid output.", {
+        candidates: result.candidates?.length,
+        usage: result.usage,
+        error: result.error, // Log any error reported in the result
+      });
+      throw new Error('AI model failed to generate a valid Red Flags response. The content might have been blocked or an internal error occurred.');
+    }
+    return output;
   }
 );
