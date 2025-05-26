@@ -11,6 +11,7 @@ import { Share2, UserPlus, Download, Terminal } from 'lucide-react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { cn } from '@/lib/utils';
 import SupportUsPopup from '@/components/truthcard/SupportUsPopup';
+import Image from 'next/image';
 
 const introTerminalLines = [
   "Booting TruthCard.AI v1.5...",
@@ -128,7 +129,9 @@ export default function TruthCardPage() {
 
   const handleAnalysisComplete = (data: GenerateCringeIndexOutput, imagePreview: string | null) => {
     setRoastData(data);
-    setCurrentProfileImagePreview(imagePreview);
+    // currentProfileImagePreview is already set in handleAnalysisStart for the loading screen
+    // If you need to update it specifically after analysis for the results display, you can do it here.
+    // setCurrentProfileImagePreview(imagePreview); 
     setIsLoading(false);
     setError(null);
 
@@ -140,10 +143,11 @@ export default function TruthCardPage() {
     }, 5000);
   };
 
-  const handleAnalysisStart = () => {
+  const handleAnalysisStart = (imagePreview: string | null) => {
     setIsLoading(true);
     setRoastData(null);
     setError(null);
+    setCurrentProfileImagePreview(imagePreview); // Set image preview for loading screen
     if (supportPopupTimeoutRef.current) {
       clearTimeout(supportPopupTimeoutRef.current);
     }
@@ -242,7 +246,7 @@ export default function TruthCardPage() {
               </div>
               <DashedSeparator />
               <ProfileUploadForm
-                onAnalysisStart={handleAnalysisStart}
+                onAnalysisStart={(imgPreview) => handleAnalysisStart(imgPreview)}
                 onAnalysisComplete={(data, imgPreview) => handleAnalysisComplete(data, imgPreview)}
                 onAnalysisError={handleAnalysisError}
                 isLoading={isLoading}
@@ -252,19 +256,53 @@ export default function TruthCardPage() {
           )}
 
           {isLoading && (
-            <div className={cn(
-              "flex flex-col items-center justify-center space-y-6 p-8 rounded-lg mt-16 w-full max-w-md mx-auto animate-fadeIn"
-              // Removed: "bg-[radial-gradient(circle_at_center,_#7B2BFF_0%,_#3A0CA3_100%)]"
-              // Removed: "shadow-[0_0_25px_#E826FF] animate-floatPlus [transform-style:preserve-3d]"
-            )}>
-              <DotLottieReact
-                src="https://lottie.host/202347a9-0b47-4bc3-b1a2-38a0321e7670/Pja9uHpvCZ.lottie"
-                loop
-                autoplay
-                style={{ width: '150px', height: '150px' }}
-              />
-              <p className="text-accent text-xl text-center pt-2 animate-glitch" data-text="ANALYZING PROFILE... 37% CRINGE DETECTED">ANALYZING PROFILE... 37% CRINGE DETECTED</p>
-              <p className="text-muted-foreground text-xs text-center uppercase tracking-wider">TRUTHCARD AI V3.7 • SCANNING FOR RED FLAGS...</p>
+            <div className="w-full p-8 rounded-lg bg-indigo-500 font-sans text-neutral-900 animate-fadeIn">
+              <h2 className="text-4xl font-bold text-center mb-8">Analysing Profile</h2>
+              <div className="flex flex-col md:flex-row gap-8">
+                {/* Left Column: Red Flags */}
+                <div className="flex-1 space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-5 h-5 bg-red-600 rounded-full"></div>
+                    <div className="w-5 h-5 bg-red-600 rounded-full"></div>
+                    <div className="w-5 h-5 bg-red-600 rounded-full"></div>
+                  </div>
+                  <h3 className="text-2xl font-bold">Red Flags:</h3>
+                  <ol className="list-decimal list-inside space-y-1 text-lg">
+                    <li>Loading..</li>
+                    <li>loading..</li>
+                    <li>Loading</li>
+                  </ol>
+                </div>
+
+                {/* Right Column: Floating Image Card */}
+                <div className="flex-1 flex items-center justify-center md:justify-end">
+                  <div className="bg-yellow-300 p-4 rounded-lg shadow-xl animate-floatPlus w-64 h-80 flex flex-col items-center justify-center text-center">
+                    {currentProfileImagePreview ? (
+                      <Image 
+                        src={currentProfileImagePreview} 
+                        alt="Uploaded profile preview" 
+                        width={240} 
+                        height={300} 
+                        className="object-contain rounded-md max-w-full max-h-full"
+                        data-ai-hint="profile picture"
+                      />
+                    ) : (
+                      <p className="text-neutral-700">Current uploaded image will be here</p>
+                    )}
+                     <p className="text-xs text-neutral-600 mt-2">note: this card where the current image will be placed, will be a floating card</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-12 text-center">
+                 <p className="text-xl font-bold mb-2 text-neutral-800">The lottie animation we added</p>
+                <DotLottieReact
+                  src="https://lottie.host/202347a9-0b47-4bc3-b1a2-38a0321e7670/Pja9uHpvCZ.lottie"
+                  loop
+                  autoplay
+                  style={{ width: '150px', height: '150px', margin: '0 auto' }}
+                />
+              </div>
             </div>
           )}
 
@@ -317,4 +355,6 @@ export default function TruthCardPage() {
     </div>
   );
 }
+    
+
     

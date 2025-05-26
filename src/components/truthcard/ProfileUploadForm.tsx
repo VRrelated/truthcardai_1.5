@@ -8,10 +8,10 @@ import { UploadCloud, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProfileUploadFormProps {
-  onAnalysisStart: () => void;
+  onAnalysisStart: (imagePreview: string | null) => void;
   onAnalysisComplete: (data: GenerateCringeIndexOutput, imagePreview: string | null) => void;
   onAnalysisError: (error: string) => void;
-  isLoading: boolean; // Kept for potential future use, e.g., disabling dropzone
+  isLoading: boolean; 
 }
 
 export default function ProfileUploadForm({
@@ -21,15 +21,15 @@ export default function ProfileUploadForm({
   isLoading,
 }: ProfileUploadFormProps) {
   const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null);
-  // profilePicturePreview is still needed to send to the AI
-  const [profilePicturePreview, setProfilePicturePreview] = useState<string | null>(null);
+  // profilePicturePreview is read by FileReader and passed up.
+  // const [profilePicturePreview, setProfilePicturePreview] = useState<string | null>(null); 
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const processFile = (file: File | null) => {
     if (!file) {
       setProfilePictureFile(null);
-      setProfilePicturePreview(null);
+      // setProfilePicturePreview(null);
       setError(null);
       return;
     }
@@ -37,14 +37,14 @@ export default function ProfileUploadForm({
     if (file.size > 4 * 1024 * 1024) { // Limit file size to 4MB
       setError("File size exceeds 4MB. Please choose a smaller image.");
       setProfilePictureFile(null);
-      setProfilePicturePreview(null);
+      // setProfilePicturePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = ""; // Reset file input
       return;
     }
     if (!file.type.startsWith("image/")) {
       setError("Invalid file type. Please upload an image (PNG, JPG, GIF, WEBP).");
       setProfilePictureFile(null);
-      setProfilePicturePreview(null);
+      // setProfilePicturePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = ""; // Reset file input
       return;
     }
@@ -55,7 +55,7 @@ export default function ProfileUploadForm({
     const reader = new FileReader();
     reader.onloadend = () => {
       const dataUri = reader.result as string;
-      setProfilePicturePreview(dataUri);
+      // setProfilePicturePreview(dataUri); // No longer need to set local state here
       // Automatically trigger analysis
       triggerAnalysis(dataUri);
     };
@@ -70,7 +70,6 @@ export default function ProfileUploadForm({
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    // Add visual feedback for drag over if desired
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -78,7 +77,7 @@ export default function ProfileUploadForm({
     event.stopPropagation();
     const file = event.dataTransfer.files?.[0];
     
-    if (fileInputRef.current) { // Ensure input value is updated for consistency
+    if (fileInputRef.current) { 
         const dataTransfer = new DataTransfer();
         if (file) dataTransfer.items.add(file);
         fileInputRef.current.files = dataTransfer.files;
@@ -87,27 +86,25 @@ export default function ProfileUploadForm({
   };
 
   const triggerAnalysis = async (imageDataUri: string) => {
-    if (isLoading) return; // Prevent multiple submissions
+    if (isLoading) return; 
 
-    onAnalysisStart();
+    onAnalysisStart(imageDataUri); // Pass image preview immediately
     setError(null);
 
     try {
       const result = await generateCringeIndex({
         profilePictureDataUri: imageDataUri,
-        userInput: "", // User input field removed as per new design
+        userInput: "", 
       });
       onAnalysisComplete(result, imageDataUri);
     } catch (err) {
       console.error("AI Analysis Error:", err);
       onAnalysisError(err instanceof Error ? err.message : "An unknown error occurred during analysis.");
     } finally {
-        // Reset file input so the same file can be re-uploaded if needed after an error
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
         setProfilePictureFile(null);
-        // Keep preview for ResultsDisplay, reset by parent component (TruthCardPage) via handleReset
     }
   };
 
@@ -118,7 +115,7 @@ export default function ProfileUploadForm({
           "w-full max-w-lg h-64 border-2 border-dashed rounded-xl p-8 text-center cursor-pointer",
           "flex flex-col items-center justify-center space-y-3",
           "text-foreground/70 hover:text-foreground hover:border-foreground transition-colors",
-          "border-foreground-muted", // Default border, uses a new CSS class for foreground dashed
+          "border-foreground-muted", 
            isLoading ? "opacity-50 cursor-not-allowed" : "",
            error ? "border-destructive hover:border-destructive/80" : "border-dashed-foreground"
         )}
@@ -152,10 +149,11 @@ export default function ProfileUploadForm({
           <p>{error}</p>
         </div>
       )}
-       {/* Max file size hint, less prominent than error */}
       {!error && (
          <p className="text-xs text-muted-foreground mt-3">Max 4MB: PNG, JPG, GIF, WEBP</p>
       )}
     </div>
   );
 }
+
+    
