@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark"> {/* Apply dark class to html for ShadCN */}
+    <html lang="en" className="dark">{/* Apply dark class to html for ShadCN */}
       <body className={`${geistSans.variable} ${geistMono.variable} font-mono antialiased bg-background text-foreground`}>
         {children}
         <Toaster />
